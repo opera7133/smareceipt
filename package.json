@@ -1,0 +1,47 @@
+{
+  "name": "smareceipt",
+  "version": "1.0.0",
+  "description": "Integration between SmartRegister and cheap receipt printers made in China",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "pnpm run build && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "receipt",
+    "printer",
+    "escpos",
+    "bluetooth",
+    "usb"
+  ],
+  "author": "wamo <ainznino@pm.me>",
+  "license": "MIT",
+  "dependencies": {
+    "@fastify/cors": "^8.3.0",
+    "@fastify/static": "^6.11.0",
+    "@fastify/view": "^8.0.0",
+    "@node-escpos/bluetooth-adapter": "^0.1.0",
+    "@node-escpos/core": "^0.4.0",
+    "@node-escpos/usb-adapter": "^0.3.1",
+    "@types/node-fetch": "^2.6.4",
+    "config": "^3.3.9",
+    "date-fns": "^2.30.0",
+    "ejs": "^3.1.9",
+    "fastify": "^4.22.2",
+    "node-fetch": "^2.7.0",
+    "receiptline": "^1.15.0",
+    "sharp": "^0.32.5"
+  },
+  "devDependencies": {
+    "@types/config": "^3.3.1",
+    "@types/ejs": "^3.1.2",
+    "@types/node": "^20.6.0",
+    "typescript": "^5.2.2"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@node-escpos/bluetooth-adapter@0.1.0": "patches/@node-escpos__bluetooth-adapter@0.1.0.patch"
+    }
+  }
+}

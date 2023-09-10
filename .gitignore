@@ -1,0 +1,4 @@
+temp*.png
+dist
+.vscode
+node_modules

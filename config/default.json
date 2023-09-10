@@ -1,0 +1,13 @@
+{
+  "port": 38334,
+  "mode": "bluetooth",
+  "smaregi": {
+    "id": "",
+    "clientId": "",
+    "clientSecret": ""
+  },
+  "shop": {
+    "name": "Example Shop",
+    "address": "東京都新宿区西新宿2-8-1"
+  }
+}
