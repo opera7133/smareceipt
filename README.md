@@ -8,7 +8,7 @@
 2. スコープのpos.transactions:readを有効化
 3. クライアントIDとクライアントシークレット、本番環境の契約IDをメモ
 4. アプリを本番環境の契約IDでアクティベート
-5. `config/default.json`を設定
+5. `config/example.json`を`config/default.json`にコピーして設定
 6. `pnpm i`
 7. `pnpm run start`
 
