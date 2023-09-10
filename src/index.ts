@@ -1,4 +1,4 @@
-import fastify from "fastify"
+import fastify, { FastifyRequest } from "fastify"
 import view from "@fastify/view"
 import ejs from "ejs"
 import fastifyStatic from "@fastify/static"
@@ -47,7 +47,7 @@ function getPaymentMethod(transaction: any) {
   }
 }
 
-async function printLatestTransaction() {
+async function printLatestTransaction(transactionId?: string) {
   let res = [];
   try {
     res.push("Started")
@@ -61,12 +61,16 @@ async function printLatestTransaction() {
       throw new Error("Request Failed")
     }
     res.push(json.access_token)
-    const latestTransactions: any = (await (await fetch(`https://api.smaregi.jp/${config.get("smaregi.id")}/pos/transactions?limit=10&sort=transactionDateTime:desc&with_details=summary&with_deposit_others=all&transaction_date_time-from=${format(sub(new Date(), { days: 30 }), "yyyy-MM-dd'T'HH:mm:ssxxx").replace("+", "%2B").replace(":", "%3A")}&transaction_date_time-to=${format(new Date(), "yyyy-MM-dd'T'HH:mm:ssxxx").replace("+", "%2B").replace(":", "%3A")}`, { method: "GET", headers: { "Authorization": "Bearer " + json.access_token } })).json())
     let latestTransaction: any;
-    for (const transaction of latestTransactions) {
-      if (Number(transaction.total) > 0) {
-        latestTransaction = transaction;
-        break;
+    if (transactionId) {
+      latestTransaction = (await (await fetch(`https://api.smaregi.jp/${config.get("smaregi.id")}/pos/transactions/${transactionId}?with_details=summary&with_deposit_others=all`, { method: "GET", headers: { "Authorization": "Bearer " + json.access_token } })).json())
+    } else {
+      const latestTransactions: any = (await (await fetch(`https://api.smaregi.jp/${config.get("smaregi.id")}/pos/transactions?limit=10&sort=transactionDateTime:desc&with_details=summary&with_deposit_others=all&transaction_date_time-from=${format(sub(new Date(), { days: 30 }), "yyyy-MM-dd'T'HH:mm:ssxxx").replace("+", "%2B").replace(":", "%3A")}&transaction_date_time-to=${format(new Date(), "yyyy-MM-dd'T'HH:mm:ssxxx").replace("+", "%2B").replace(":", "%3A")}`, { method: "GET", headers: { "Authorization": "Bearer " + json.access_token } })).json())
+      for (const transaction of latestTransactions) {
+        if (Number(transaction.total) > 0) {
+          latestTransaction = transaction;
+          break;
+        }
       }
     }
     /*latestTransaction = {
@@ -206,6 +210,14 @@ server.get('/', (request, reply) => {
 
 server.get('/print', async (request, reply) => {
   reply.send(await printLatestTransaction())
+})
+
+server.post('/hook', async (request: FastifyRequest<{Body: {action: string, transactionHeadIds: string[], event: string, contractId: string}}>, reply) => {
+  if (request.headers["Smaregi-Event"] === "pos:transactions" && request.body.action === "created") {
+    for (const transactionId of request.body.transactionHeadIds) {
+      reply.send(await printLatestTransaction(transactionId))
+    }
+  }
 })
 
 server.listen({ port: config.get("port") }, (err, address) => {
