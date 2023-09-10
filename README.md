@@ -38,6 +38,14 @@
 
 ```
 
+## アドレス
+
+`/`: 操作用ページ
+
+`/print`: 印刷(GET)
+
+`/hook`: Webhook用(POST)
+
 ## 注意
 
 ### Windowsの場合
