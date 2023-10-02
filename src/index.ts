@@ -123,7 +123,6 @@ async function printLatestTransaction(transactionId?: string) {
 
     {width:*,10}
     ^合計 | ^¥${latestTransaction.total}
-    （内税 | ¥${latestTransaction.taxInclude}）
 
     ${getPaymentMethod(latestTransaction)}
     お釣り | ^¥${latestTransaction.change}
